@@ -5528,6 +5528,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-aixcm"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-onboard",
+ "pallet-xcm",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-std",
+ "xcm",
+ "xcm-executor",
+]
+
+[[package]]
 name = "pallet-aura"
 version = "4.0.0-dev"
 source = "git+https://github.com/paritytech/substrate?branch=polkadot-v0.9.43#a2037bdedef0aa812017efee1d0fa63d4f5fcbae"
@@ -6106,7 +6121,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "pallet-parachain-template"
+name = "pallet-onboard"
 version = "0.1.0"
 dependencies = [
  "frame-benchmarking",
@@ -6114,10 +6129,10 @@ dependencies = [
  "frame-system",
  "parity-scale-codec",
  "scale-info",
- "serde",
  "sp-core",
  "sp-io",
  "sp-runtime",
+ "sp-std",
 ]
 
 [[package]]
@@ -6628,11 +6643,12 @@ dependencies = [
  "frame-try-runtime",
  "hex-literal",
  "log",
+ "pallet-aixcm",
  "pallet-aura",
  "pallet-authorship",
  "pallet-balances",
  "pallet-collator-selection",
- "pallet-parachain-template",
+ "pallet-onboard",
  "pallet-session",
  "pallet-sudo",
  "pallet-timestamp",

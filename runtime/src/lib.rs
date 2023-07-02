@@ -57,9 +57,6 @@ use weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight};
 use xcm::latest::prelude::BodyId;
 use xcm_executor::XcmExecutor;
 
-/// Import the template pallet.
-pub use pallet_parachain_template;
-
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
 pub type Signature = MultiSignature;
 
@@ -456,9 +453,36 @@ impl pallet_collator_selection::Config for Runtime {
 	type WeightInfo = ();
 }
 
-/// Configure the pallet template in pallets/template.
-impl pallet_parachain_template::Config for Runtime {
+parameter_types! {
+	pub const MinBlocksPerRound: u32 = 5;
+	// 12 seconds one block
+	// 7200 => 1 day
+	// 50400 => 1 week
+	pub const DefaultBlocksPerRound: u32 = 50400;
+}
+
+// Configure the pallet onboard in pallets/board.
+impl pallet_onboard::Config for Runtime {
+	type RuntimeOrigin = RuntimeOrigin;
 	type RuntimeEvent = RuntimeEvent;
+	type ChannelId = u64;
+	type SetAdminOrigin = EnsureRoot<AccountId>;
+	type Currency = Balances;
+	type MinBlocksPerRound = MinBlocksPerRound;
+	type DefaultBlocksPerRound = DefaultBlocksPerRound;
+}
+
+use pallet_aixcm::{ChannelWrapper, OriginAIMessageConverter};
+impl pallet_aixcm::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type ChannelSovereignOrigin = ChannelWrapper<
+		RuntimeOrigin,
+		OriginAIMessageConverter<
+			RuntimeOrigin,
+			pallet_onboard::RawOrigin<<Self as frame_system::Config>::AccountId>,
+			<Self as frame_system::Config>::AccountId,
+		>,
+	>;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
@@ -491,8 +515,9 @@ construct_runtime!(
 		CumulusXcm: cumulus_pallet_xcm = 32,
 		DmpQueue: cumulus_pallet_dmp_queue = 33,
 
-		// Template
-		TemplatePallet: pallet_parachain_template = 40,
+		// Local
+		OnBoard: pallet_onboard = 40,
+		AiXCM: pallet_aixcm = 41,
 	}
 );
 
